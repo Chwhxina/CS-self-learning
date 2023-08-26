@@ -24,6 +24,7 @@ public class TimeAList {
 
     public static void timeAListConstruction() {
         // TODO: YOUR CODE HERE
+        System.out.println("Timing table for addLast");
         AList<Integer> Ns = new AList<>();
         AList<Integer> test;
         AList<Integer> opCounts = new AList<>();
@@ -31,7 +32,7 @@ public class TimeAList {
         int ops;
         double timeInSeconds;
         Stopwatch sw;
-        int[] N = {1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000};
+        int[] N = {1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000, 512000};
         for (int i : N) {
             Ns.addLast(i);
             test = new AList<>();
