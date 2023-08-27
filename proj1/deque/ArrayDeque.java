@@ -2,15 +2,11 @@ package deque;
 
 import java.security.PublicKey;
 
-public class ArrayDeque<Item> {
-    private Item[] items;
-    private int size;
-    private int nextfirst;
-    private int nextlast;
-
-    boolean isEmpty() {
-        return nextfirst + 1 == nextlast;
-    }
+public class ArrayDeque<Item> implements Deque<Item> {
+    protected Item[] items;
+    protected int nextfirst;
+    protected int nextlast;
+    protected int size;
     public ArrayDeque() {
         items = (Item[]) new Object[8];
         size = 0;
@@ -82,5 +78,10 @@ public class ArrayDeque<Item> {
             }
             mark = (mark + 1) % items.length;
         }
+    }
+
+    public Item get(int index) {
+        int first = (nextfirst + 1) % items.length;
+        return items[(first + index) % items.length];
     }
 }

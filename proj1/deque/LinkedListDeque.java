@@ -2,7 +2,7 @@ package deque;
 
 import jh61b.junit.In;
 
-public class LinkedListDeque<Item> {
+public class LinkedListDeque<Item> implements Deque<Item> {
     private class IntNode {
         Item item;
         public IntNode sentinel;
@@ -19,9 +19,8 @@ public class LinkedListDeque<Item> {
             return next.getIndex(index - 1);
         }
     }
-    private int size;
     private IntNode sentinel;
-
+    protected int size;
     public LinkedListDeque() {
         int size = 0;
         sentinel = new IntNode(null, null, null);
@@ -47,10 +46,6 @@ public class LinkedListDeque<Item> {
         size += 1;
     }
 
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
     public Item removeFirst() {
         if(isEmpty())
             return null;
@@ -71,11 +66,23 @@ public class LinkedListDeque<Item> {
         return r;
     }
 
+    public Item get(int index) {
+        if(index >= size)
+            return null;
+        IntNode p = sentinel;
+        for(int i = 0; i <= index; i++) {
+            p = p.next;
+        }
+        return p.item;
+    }
+
     public int size() {
         return size;
     }
 
     public Item getRecursive (int index) {
+        if(index >= size)
+            return null;
         return sentinel.getIndex(index);
     }
 
