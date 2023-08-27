@@ -1,6 +1,7 @@
 package deque;
 
 import java.security.PublicKey;
+import java.util.Iterator;
 
 public class ArrayDeque<Item> implements Deque<Item> {
     protected Item[] items;
@@ -79,9 +80,42 @@ public class ArrayDeque<Item> implements Deque<Item> {
             mark = (mark + 1) % items.length;
         }
     }
-
     public Item get(int index) {
         int first = (nextfirst + 1) % items.length;
         return items[(first + index) % items.length];
+    }
+    class Itr implements Iterator<Item> {
+        private int thisIndex;
+        public Itr() {
+            thisIndex = (nextfirst + 1) % items.length;
+        }
+        @Override
+        public boolean hasNext() {
+            return thisIndex != (nextlast + items.length - 1) ;
+        }
+
+        @Override
+        public Item next() {
+            Item r = items[thisIndex];
+            thisIndex = (thisIndex + 1) % items.length;
+            return r;
+        }
+    }
+    public Iterator<Item> iterator() {
+        return new Itr();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Deque<?> other;
+        if(o instanceof Deque) {
+            other = (Deque<?>) o;
+        }else
+            return false;
+        for(int i = 0; i < size; i++) {
+            if(!get(i).equals(other.get(i)))
+                return false;
+        }
+        return true;
     }
 }

@@ -116,4 +116,17 @@ public class ArrayDequeTest {
             assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);
         }
     }
+    @Test
+    public void equalsTest() {
+        Deque<Integer> lld1 = new ArrayDeque<>();
+        lld1.addFirst(3);
+        lld1.addFirst(5);
+        lld1.addFirst(1);
+        Deque<Integer> lld2 = new LinkedListDeque<>();
+        lld2.addFirst(3);
+        lld2.addFirst(5);
+        lld2.addFirst(1);
+        assertTrue(lld1.equals(lld2));
+        return;
+    }
 }

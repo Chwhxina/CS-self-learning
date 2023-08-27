@@ -1,5 +1,9 @@
 package deque;
 
+import net.sf.saxon.type.ItemType;
+
+import java.lang.reflect.Type;
+
 public interface Deque<Item> {
     public void addFirst(Item item);
     public void addLast(Item item);

@@ -2,6 +2,8 @@ package deque;
 
 import jh61b.junit.In;
 
+import java.lang.reflect.Type;
+import java.util.Iterator;
 public class LinkedListDeque<Item> implements Deque<Item> {
     private class IntNode {
         Item item;
@@ -98,5 +100,26 @@ public class LinkedListDeque<Item> implements Deque<Item> {
         }
     }
 
+    class Itr implements Iterator<Item> {
+        private IntNode thisNode;
+        public Itr() {
+            thisNode = sentinel.next;
+        }
+        @Override
+        public boolean hasNext() {
+            return thisNode != sentinel;
+        }
+
+        @Override
+        public Item next() {
+            Item r = thisNode.item;
+            thisNode = thisNode.next;
+            return r;
+        }
+    }
+
+    public Iterator<Item> iterator() {
+        return new Itr();
+    }
 
 }
