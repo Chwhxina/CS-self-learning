@@ -108,21 +108,20 @@ public class LinkedListDeque<T> implements Deque<T> {
             thisNode = thisNode.next;
             return r;
         }
-        @Override
-        public boolean equals(Object o) {
-            Deque<?> other;
-            if(o instanceof Deque) {
-                other = (Deque<?>) o;
-            }else
-                return false;
-            for(int i = 0; i < size; i++) {
-                if(!get(i).equals(other.get(i)))
-                    return false;
-            }
-            return true;
-        }
     }
-
+    @Override
+    public boolean equals(Object o) {
+        Deque<?> other;
+        if(o instanceof Deque) {
+            other = (Deque<?>) o;
+        }else
+            return false;
+        for(int i = 0; i < size; i++) {
+            if(!get(i).equals(other.get(i)))
+                return false;
+        }
+        return true;
+    }
     public Iterator<T> iterator() {
         return new Itr();
     }
