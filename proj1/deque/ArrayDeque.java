@@ -15,17 +15,6 @@ public class ArrayDeque<T> implements Deque<T>{
         nextlast = 5;
     }
 
-    public ArrayDeque(int capacity) {
-        if(capacity < 8) {
-            items = (T[]) new Object[8];
-        }else {
-            items = (T[]) new Object[capacity];
-        }
-        size = 0;
-        nextfirst = 4;
-        nextlast = 5;
-    }
-
     public void addLast(T x) {
         if(nextlast == nextfirst) {
             resize(items.length * 2);
@@ -61,11 +50,15 @@ public class ArrayDeque<T> implements Deque<T>{
         return x;
     }
 
-    public void resize(int capacity) {
+    private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
         System.arraycopy(items, (nextfirst + 1) % items.length, a, 0, items.length - nextfirst - 1);
-        if(nextfirst == 0)
+        if(nextfirst == 0) {
+            items = a;
+            nextlast = size;
+            nextfirst = items.length - 1;
             return;
+        }
         else{
             System.arraycopy(items, 0, a, items.length - nextfirst - 1, nextlast);
         }
@@ -124,6 +117,8 @@ public class ArrayDeque<T> implements Deque<T>{
         Deque<?> other;
         if(o instanceof Deque) {
             other = (Deque<?>) o;
+            if(other.size() != size)
+                return false;
         }else
             return false;
         for(int i = 0; i < size; i++) {

@@ -121,22 +121,36 @@ public class ArrayDequeTest {
     }
     @Test
     public void equalsTest() {
-//        Deque<Integer> lld1 = new ArrayDeque<>();
-//        lld1.addFirst(3);
-//        lld1.addFirst(5);
-//        lld1.addFirst(1);
+        Deque<Integer> lld1 = new ArrayDeque<>();
+        lld1.addFirst(3);
+        lld1.addFirst(5);
+        lld1.addFirst(1);
 
         Deque<Integer> lld2 = new LinkedListDeque<>();
         lld2.addFirst(3);
         lld2.addFirst(5);
         lld2.addFirst(1);
-//        assertTrue(lld1.equals(lld2));
-
-        Iterator<Integer> it = lld2.iterator();
-        for(var i : lld2) {
-            System.out.println(i);
-        }
+        assertTrue(lld1.equals(lld2));
 
         return;
+    }
+
+    @Test
+    public void getTest() {
+        Deque<Integer> lld1 = new ArrayDeque<>();
+        lld1.addLast(0);
+        lld1.removeLast();
+        lld1.addLast(2);
+        lld1.addLast(3);
+        lld1.removeLast();
+        lld1.addFirst(5);
+        lld1.addFirst(6);
+        lld1.addFirst(7);
+        lld1.addLast(8);
+        lld1.addLast(9);
+        lld1.addFirst(10);
+        lld1.addLast(11);
+        int a = lld1.removeFirst();
+        assertEquals(10, a);
     }
 }
