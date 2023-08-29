@@ -1,15 +1,31 @@
 package deque;
 
-import java.security.PublicKey;
-import java.util.Iterator;
+import org.junit.Test;
 
-public class ArrayDeque<Item> implements Deque<Item> {
+import java.security.PublicKey;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.function.Consumer;
+
+public class ArrayDeque<Item> implements Deque<Item>{
     protected Item[] items;
     protected int nextfirst;
     protected int nextlast;
     protected int size;
     public ArrayDeque() {
         items = (Item[]) new Object[8];
+        size = 0;
+        nextfirst = 4;
+        nextlast = 5;
+    }
+
+    public ArrayDeque(int capacity) {
+        if(capacity < 8) {
+            items = (Item[]) new Object[8];
+        }else {
+            items = (Item[]) new Object[capacity];
+        }
         size = 0;
         nextfirst = 4;
         nextlast = 5;
@@ -44,7 +60,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
     public Item removeLast() {
         if(nextlast - 1 == nextfirst)
             return null;
-        Item x = items[nextlast - 1];
+        Item x = items[(nextlast + items.length - 1) % items.length];
         nextlast = (nextlast - 1 + items.length) % items.length;
         size -= 1;
         return x;
@@ -84,20 +100,23 @@ public class ArrayDeque<Item> implements Deque<Item> {
         int first = (nextfirst + 1) % items.length;
         return items[(first + index) % items.length];
     }
-    class Itr implements Iterator<Item> {
+
+    public class Itr implements Iterator<Item> {
+        int remaining = size;
         private int thisIndex;
         public Itr() {
             thisIndex = (nextfirst + 1) % items.length;
         }
         @Override
         public boolean hasNext() {
-            return thisIndex != (nextlast + items.length - 1) ;
+            return remaining > 0;
         }
 
         @Override
         public Item next() {
             Item r = items[thisIndex];
             thisIndex = (thisIndex + 1) % items.length;
+            remaining -= 1;
             return r;
         }
     }

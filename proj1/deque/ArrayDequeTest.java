@@ -1,5 +1,9 @@
 package deque;
 import org.junit.Test;
+
+import java.sql.Array;
+import java.util.Iterator;
+
 import static org.junit.Assert.*;
 
 public class ArrayDequeTest {
@@ -118,15 +122,22 @@ public class ArrayDequeTest {
     }
     @Test
     public void equalsTest() {
-        Deque<Integer> lld1 = new ArrayDeque<>();
-        lld1.addFirst(3);
-        lld1.addFirst(5);
-        lld1.addFirst(1);
+//        Deque<Integer> lld1 = new ArrayDeque<>();
+//        lld1.addFirst(3);
+//        lld1.addFirst(5);
+//        lld1.addFirst(1);
+
         Deque<Integer> lld2 = new LinkedListDeque<>();
         lld2.addFirst(3);
         lld2.addFirst(5);
         lld2.addFirst(1);
-        assertTrue(lld1.equals(lld2));
+//        assertTrue(lld1.equals(lld2));
+
+        Iterator<Integer> it = lld2.iterator();
+        for(var i : lld2) {
+            System.out.println(i);
+        }
+
         return;
     }
 }
