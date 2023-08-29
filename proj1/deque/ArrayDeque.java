@@ -1,20 +1,15 @@
 package deque;
 
-import org.junit.Test;
-
-import java.security.PublicKey;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.Objects;
-import java.util.function.Consumer;
 
-public class ArrayDeque<Item> implements Deque<Item>{
-    protected Item[] items;
-    protected int nextfirst;
-    protected int nextlast;
-    protected int size;
+
+public class ArrayDeque<T> implements Deque<T>{
+    private T[] items;
+    private int nextfirst;
+    private int nextlast;
+    private int size;
     public ArrayDeque() {
-        items = (Item[]) new Object[8];
+        items = (T[]) new Object[8];
         size = 0;
         nextfirst = 4;
         nextlast = 5;
@@ -22,16 +17,16 @@ public class ArrayDeque<Item> implements Deque<Item>{
 
     public ArrayDeque(int capacity) {
         if(capacity < 8) {
-            items = (Item[]) new Object[8];
+            items = (T[]) new Object[8];
         }else {
-            items = (Item[]) new Object[capacity];
+            items = (T[]) new Object[capacity];
         }
         size = 0;
         nextfirst = 4;
         nextlast = 5;
     }
 
-    public void addLast(Item x) {
+    public void addLast(T x) {
         if(nextlast == nextfirst) {
             resize(items.length * 2);
         }
@@ -39,7 +34,7 @@ public class ArrayDeque<Item> implements Deque<Item>{
         nextlast = (nextlast + 1) % items.length;
         size += 1;
     }
-    public void addFirst(Item x) {
+    public void addFirst(T x) {
         if(nextfirst == nextlast) {
             resize(items.length * 2);
         }
@@ -48,26 +43,26 @@ public class ArrayDeque<Item> implements Deque<Item>{
         size += 1;
     }
 
-    public Item removeFirst() {
+    public T removeFirst() {
         if(nextfirst + 1 == nextlast)
             return null;
-        Item x = items[(nextfirst + 1) % items.length];
+        T x = items[(nextfirst + 1) % items.length];
         nextfirst = (nextfirst + 1) % items.length;
         size -= 1;
         return x;
     }
 
-    public Item removeLast() {
+    public T removeLast() {
         if(nextlast - 1 == nextfirst)
             return null;
-        Item x = items[(nextlast + items.length - 1) % items.length];
+        T x = items[(nextlast + items.length - 1) % items.length];
         nextlast = (nextlast - 1 + items.length) % items.length;
         size -= 1;
         return x;
     }
 
     public void resize(int capacity) {
-        Item[] a = (Item[]) new Object[capacity];
+        T[] a = (T[]) new Object[capacity];
         System.arraycopy(items, (nextfirst + 1) % items.length, a, 0, items.length - nextfirst - 1);
         if(nextfirst == 0)
             return;
@@ -96,12 +91,12 @@ public class ArrayDeque<Item> implements Deque<Item>{
             mark = (mark + 1) % items.length;
         }
     }
-    public Item get(int index) {
+    public T get(int index) {
         int first = (nextfirst + 1) % items.length;
         return items[(first + index) % items.length];
     }
 
-    public class Itr implements Iterator<Item> {
+    private class Itr implements Iterator<T> {
         int remaining = size;
         private int thisIndex;
         public Itr() {
@@ -113,14 +108,14 @@ public class ArrayDeque<Item> implements Deque<Item>{
         }
 
         @Override
-        public Item next() {
-            Item r = items[thisIndex];
+        public T next() {
+            T r = items[thisIndex];
             thisIndex = (thisIndex + 1) % items.length;
             remaining -= 1;
             return r;
         }
     }
-    public Iterator<Item> iterator() {
+    public Iterator<T> iterator() {
         return new Itr();
     }
 
