@@ -1,6 +1,7 @@
 package capers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import static capers.Utils.*;
 
@@ -53,10 +54,22 @@ public class Main {
         case "dog":
             validateNumArgs("dog", args, 4);
             // TODO: make a dog
+            var dogName = args[1];
+            var dogBreed = args[2];
+            var dogAge = Integer.parseInt(args[3]);
+            Dog dog = new Dog(args[1], dogBreed, dogAge);
+            dog.saveDog();
+            System.out.println(dog.toString());
             break;
         case "birthday":
             validateNumArgs("birthday", args, 2);
             // TODO: celebrate this dog's birthday
+            try{
+                Dog thisDog = Dog.fromFile(args[1]);
+                thisDog.haveBirthday();
+            }catch (NullPointerException e){
+                System.out.println("dog is null" + e);
+            }
             break;
         default:
             exitWithError(String.format("Unknown command: %s", args[0]));
