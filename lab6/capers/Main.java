@@ -57,9 +57,7 @@ public class Main {
             var dogName = args[1];
             var dogBreed = args[2];
             var dogAge = Integer.parseInt(args[3]);
-            Dog dog = new Dog(args[1], dogBreed, dogAge);
-            dog.saveDog();
-            System.out.println(dog.toString());
+            CapersRepository.makeDog(args[1], dogBreed, dogAge);
             break;
         case "birthday":
             validateNumArgs("birthday", args, 2);

@@ -20,7 +20,7 @@ public class CapersRepository {
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = join(CWD, ".capers/.dogs"); // TODO Hint: look at the `join`
+    static final File CAPERS_FOLDER = join(CWD, ".capers/"); // TODO Hint: look at the `join`
                                             //      function in Utils
     static final File STORY_FILE = join(CAPERS_FOLDER, "story");
 
@@ -65,6 +65,15 @@ public class CapersRepository {
      */
     public static void makeDog(String name, String breed, int age) {
         // TODO
+        Dog dogNew = new Dog(name, breed, age);
+        File dogFile = join(Dog.DOG_FOLDER, name);
+        try{
+            dogFile.createNewFile();
+        } catch (IOException e) {
+            System.out.println("makeDog failed: " + e);
+        }
+        writeObject(dogFile, dogNew);
+        System.out.println(dogNew);
     }
 
     /**
@@ -75,5 +84,13 @@ public class CapersRepository {
      */
     public static void celebrateBirthday(String name) {
         // TODO
+        File dogFile = join(Dog.DOG_FOLDER, name);
+        if(!dogFile.exists()){
+            System.out.println("dog " + name + " doesn't exist");
+            return;
+        }
+        Dog dog = readObject(dogFile, Dog.class);
+        dog.haveBirthday();
+        dog.saveDog();
     }
 }
