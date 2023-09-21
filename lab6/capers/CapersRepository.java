@@ -35,12 +35,8 @@ public class CapersRepository {
      */
     public static void setupPersistence() {
         // TODO
-        if(!CAPERS_FOLDER.mkdir()) {
-            exitWithError("creat .capers failed");
-        }
-        if(!Dog.DOG_FOLDER.mkdir()) {
-            exitWithError("creat .dogs failed");
-        }
+        CAPERS_FOLDER.mkdir();
+        Dog.DOG_FOLDER.mkdir();
         try {
             STORY_FILE.createNewFile();
         } catch (IOException e) {
@@ -55,7 +51,9 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         // TODO
-        writeContents(STORY_FILE, text);
+        String s = readContentsAsString(STORY_FILE);
+        writeContents(STORY_FILE, s + text + '\n');
+        System.out.println(readContentsAsString(STORY_FILE));
     }
 
     /**
