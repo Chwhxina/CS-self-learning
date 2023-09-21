@@ -16,11 +16,9 @@ public class TimeSLList {
             System.out.printf("%12d %12.2f %12d %12.2f\n", N, time, opCount, timePerOp);
         }
     }
-
     public static void main(String[] args) {
         timeGetLast();
     }
-
     public static void timeGetLast() {
         // TODO: YOUR CODE HERE
         System.out.println("Timing table for getLast");
