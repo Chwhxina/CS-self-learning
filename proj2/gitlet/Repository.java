@@ -24,6 +24,20 @@ public class Repository {
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
-
+    public static final File REFS_DIR = join(GITLET_DIR, "refs");
     /* TODO: fill in the rest of this class. */
+    public Repository() {
+        init();
+    }
+    private void init() {
+        File MASTER_DIR = join(REFS_DIR, "master/");
+        try {
+            GITLET_DIR.mkdir();
+            REFS_DIR.mkdir();
+            MASTER_DIR.mkdir();
+        } catch (SecurityException | NullPointerException e){
+            e.printStackTrace();
+        }
+
+    }
 }
