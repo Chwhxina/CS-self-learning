@@ -1,7 +1,11 @@
 package gitlet;
 
 // TODO: any imports you need here
+import static gitlet.Utils.*;
+import static gitlet.Repository.*;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.Date; // TODO: You'll likely use this in this class
 
 /** Represents a gitlet commit object.
@@ -10,7 +14,7 @@ import java.util.Date; // TODO: You'll likely use this in this class
  *
  *  @author TODO
  */
-public class Commit {
+public class Commit implements Serializable {
     /**
      * TODO: add instance variables here.
      *
@@ -21,6 +25,34 @@ public class Commit {
 
     /** The message of this Commit. */
     private String message;
-
+    private String timestamp;
+    private String parent;
+    private String Path;
+    private String UID;
     /* TODO: fill in the rest of this class. */
+    public static final File COMMIT_DIR = join(GITLET_DIR, "");
+    public Commit(String message, String parent) {
+        this.message = message;
+        this.parent = parent;
+        if(this.parent == null) {
+            this.timestamp = "00:00:00 UTC, Thursday, 1 January 1970";
+        }
+    }
+
+    public String saveCommit() {
+        if(!COMMIT_DIR.exists()) {
+            if(!COMMIT_DIR.mkdir()) {
+                throw new IllegalArgumentException("create commit dir failed");
+            }
+        }
+        this.UID = sha1(serialize(this));
+        File file = join(COMMIT_DIR, this.UID);
+        this.Path = file.getPath();
+        writeObject(file, this);
+        return this.UID;
+    }
+
+    public String getPath() {
+        return this.Path;
+    }
 }

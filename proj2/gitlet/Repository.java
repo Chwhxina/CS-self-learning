@@ -29,15 +29,38 @@ public class Repository {
     public Repository() {
         init();
     }
+
+    /***
+     * 初始化仓库
+     */
     private void init() {
-        File MASTER_DIR = join(REFS_DIR, "master/");
+        //MASTER 表示master分支的文件
+        File MASTER = join(REFS_DIR, "master");
+        //HEAD文件内存储master的路径
+        File HEAD = join(GITLET_DIR, "HEAD");
+        //检查是否有仓库存在
+        if(GITLET_DIR.exists()) {
+            System.out.println("A Gitlet version-control system " +
+                    "already exists in the current directory.");
+            return;
+        }
         try {
             GITLET_DIR.mkdir();
             REFS_DIR.mkdir();
-            MASTER_DIR.mkdir();
         } catch (SecurityException | NullPointerException e){
             e.printStackTrace();
         }
+        //新建一个初始Commit
+        Commit initCommit = new Commit("init message", null);
+        //initUid存储初始Commit的UID
+        String initUid = initCommit.saveCommit();
+        //将UID写入MASTER
+        writeContents(MASTER, initUid);
+        //将MASTER的路径写入HEAD
+        writeContents(HEAD, MASTER.getPath());
+    }
 
+    public static void add(File addFile) {
+        
     }
 }
