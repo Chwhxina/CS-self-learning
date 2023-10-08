@@ -25,6 +25,12 @@ public class Repository {
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     public static final File REFS_DIR = join(GITLET_DIR, "refs");
+    public static final File OBJ_DIR = join(GITLET_DIR, "objects");
+    public static final File BLOBS_DIR = join(OBJ_DIR, "blobs");
+    public static final File COMMIT_DIR = join(OBJ_DIR, "commits");
+    public static final File TREE_DIR = join(OBJ_DIR, "trees");
+    public static final File HEADS_DIR = join(REFS_DIR, "heads");
+    public static final File HEAD = join(GITLET_DIR, "head");
     /* TODO: fill in the rest of this class. */
     public Repository() {
         init();
@@ -47,17 +53,17 @@ public class Repository {
         try {
             GITLET_DIR.mkdir();
             REFS_DIR.mkdir();
+            OBJ_DIR.mkdir();
+            TREE_DIR.mkdir();
+            COMMIT_DIR.mkdir();
+            BLOBS_DIR.mkdir();
         } catch (SecurityException | NullPointerException e){
             e.printStackTrace();
         }
-        //新建一个初始Commit
-        Commit initCommit = new Commit("init message", null);
-        //initUid存储初始Commit的UID
-        String initUid = initCommit.saveCommit();
-        //将UID写入MASTER
-        writeContents(MASTER, initUid);
-        //将MASTER的路径写入HEAD
-        writeContents(HEAD, MASTER.getPath());
+        Commit master = new Commit("initial commit", null, null);
+        String masterUID = master.saveCommit();
+
+
     }
 
     public static void add(File addFile) {

@@ -7,11 +7,10 @@ import java.io.Serializable;
 import java.util.List;
 
 public class test implements Serializable {
-
     @Test
     public void test() {
-        Repository r = new Repository();
-        File a = Utils.join(Repository.CWD, "1");
-        Blob b = new Blob(a);
+        //Blob b = new Blob(Utils.join(Repository.CWD, "1"));
+        Blob b = Blob.getBlob(Utils.join(Repository.BLOBS_DIR, "34f34a9fcddcdfe1306506d2c557786fd9c929ba"));
+        b.writeFile(Utils.join(Repository.CWD, "2"));
     }
 }

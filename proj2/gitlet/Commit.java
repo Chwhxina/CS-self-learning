@@ -29,11 +29,12 @@ public class Commit implements Serializable {
     private String parent;
     private String Path;
     private String UID;
+    private String tree;
     /* TODO: fill in the rest of this class. */
-    public static final File COMMIT_DIR = join(GITLET_DIR, "");
-    public Commit(String message, String parent) {
+    public Commit(String message, String parent, String tree) {
         this.message = message;
         this.parent = parent;
+        this.tree = tree;
         if(this.parent == null) {
             this.timestamp = "00:00:00 UTC, Thursday, 1 January 1970";
         }
@@ -54,5 +55,9 @@ public class Commit implements Serializable {
 
     public String getPath() {
         return this.Path;
+    }
+
+    public static Commit getCommit(File file) {
+        return readObject(file, Commit.class);
     }
 }

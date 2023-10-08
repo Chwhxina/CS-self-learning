@@ -5,50 +5,47 @@ import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
 public class Blob implements Serializable {
-    private String version;
     private byte[] contend;
-    private String fileName;
-    private final File BLOBS_DIR = join(GITLET_DIR, "object", "blob");
-    private String UID;
-
     /***
-     * 创建新的Blob文件并初始化
-     * @param version 版本号
-     * @param filePath 文件路径
+     * 初始化Blob
+     * @param filePath 序列化的文件路径
      */
-    public Blob(String version, File filePath) {
-        this.contend = Utils.readContents(filePath);
-        this.version = version;
-        this.fileName = filePath.getName();
-        saveBlob();
-    }
-
     public Blob(File filePath) {
-        this.contend = Utils.readContents(filePath);
-        this.version = "1.0";
-        this.fileName = filePath.getName();
-        saveBlob();
+        readFile(filePath);
     }
-
+    /***
+     * 将文件读取转化为byte[]数组
+     * @param filePath 路径
+     */
+    private void readFile(File filePath) {
+        this.contend = Utils.readContents(filePath);
+    }
+    /***
+     * 将自身存储的byte[]存储为文件
+     * @param filepath 路径
+     */
+    public void writeFile(File filepath) {
+        writeContents(filepath, this.contend);
+    }
+    /***
+     * 将序列化后的文件转换为Blob类
+     * @param file 被序列化后的文件路径
+     * @return 对应的Blob文件
+     */
+    public static Blob getBlob(File file) {
+        return readObject(file, Blob.class);
+    }
     /****
      * 存储Blob块
      */
-    private void saveBlob() {
+    public String saveBlob() {
         if (!BLOBS_DIR.exists()) {
             if(!BLOBS_DIR.mkdir()) {
                 System.out.println("create project dir failed");
             }
         }
-        this.UID = sha1(serialize(this));
-        File blob = join(GITLET_DIR, UID);
-        writeObject(blob, this);
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String toHashCode() {
-        return Utils.sha1(serialize(this));
+        var sha1code = sha1(serialize(this));
+        writeObject(join(BLOBS_DIR, sha1code), this);
+        return sha1code;
     }
 }
