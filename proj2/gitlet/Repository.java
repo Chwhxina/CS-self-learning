@@ -26,13 +26,14 @@ public class Repository implements Serializable {
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
-    public static final File GITLET_DIR = join(CWD, ".gitlet");
+    public static final File PROJ_DIR = join(CWD, "proj2");
+    public static final File GITLET_DIR = join(PROJ_DIR, ".gitlet");
     public static final File REFS_DIR = join(GITLET_DIR, "refs");
     public static final File OBJ_DIR = join(GITLET_DIR, "objects");
     public static final File BLOBS_DIR = join(OBJ_DIR, "blobs");
     public static final File COMMIT_DIR = join(OBJ_DIR, "commits");
     public static final File TREE_DIR = join(OBJ_DIR, "trees");
-    public static final File STAGE_DIR = join(OBJ_DIR, "stage");
+    public static final File STAGE = join(BLOBS_DIR, "stage");
     public static final File HEADS_DIR = join(REFS_DIR, "heads");
     public static final File HEAD = join(GITLET_DIR, "head");
     /* TODO: fill in the rest of this class. */
@@ -57,7 +58,7 @@ public class Repository implements Serializable {
             TREE_DIR.mkdir();
             COMMIT_DIR.mkdir();
             BLOBS_DIR.mkdir();
-            STAGE_DIR.mkdir();
+            HEADS_DIR.mkdir();
         } catch (SecurityException | NullPointerException e){
             e.printStackTrace();
         }
@@ -70,22 +71,28 @@ public class Repository implements Serializable {
         File MASTER = join(HEADS_DIR, masterUID);
         writeContents(MASTER, masterUID);
         if(MASTER.toPath().startsWith(GITLET_DIR.toPath())) {
-            writeContents(HEAD, MASTER.toPath().relativize(GITLET_DIR.toPath()));
+            writeContents(HEAD, MASTER.toPath().relativize(GITLET_DIR.toPath()).toString());
         } else {
             System.out.println("HEAD ERROR");
         }
     }
 
-    public static void add(File addFile) {
+    public static void add(String file) {
+        File addFile = join(PROJ_DIR, file);
+
         //如果目的文件为文件夹
         if(addFile.isDirectory()) {
             for(var i : addFile.listFiles()) {
-                add(i);
+                add(i.getName());
             }
             return;
         }
 
+        //把文件写入暂存区
         Blob addBlob = new Blob(addFile);
-
+        String UID = addBlob.saveBlob();
+        Stage stage = readObject(STAGE, Stage.class);
+        stage.UIDs.add(UID);
+        writeObject(STAGE, stage);
     }
 }

@@ -42,7 +42,7 @@ public class Blob implements Serializable {
      * 存储Blob块
      */
     public String saveBlob() {
-        var sha1code = sha1(serialize(this));
+        var sha1code = toUID();
         writeObject(join(BLOBS_DIR, sha1code), this);
         return sha1code;
     }

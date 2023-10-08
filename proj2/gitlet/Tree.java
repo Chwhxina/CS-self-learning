@@ -2,20 +2,17 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import static gitlet.Utils.*;
+import static gitlet.Repository.*;
 
 public class Tree implements Serializable {
-    private final Map<File, String> NametoUID;
+    private final Map<String, Set<File>> UIDtoFile;
+    private final Map<String, String> UIDtoTree;
 
     public Tree() {
-        NametoUID = new HashMap<>();
-    }
-
-    public boolean exist(File file) {
-        return NametoUID.containsKey(file);
+        UIDtoFile = new HashMap<>();
+        UIDtoTree = new HashMap<>();
     }
 
     /***
@@ -23,19 +20,26 @@ public class Tree implements Serializable {
      * @param UID 文件的hash值
      * @param name 文件的路径
      */
-    public void addItem(String UID, File name) {
-        NametoUID.put(name, UID);
+    public void addFile(String UID, File name) {
+        if(UIDtoFile.containsKey(UID)) {
+
+        }
     }
 
-    /***
-     * 返回Tree中的所有File指针
-     * @return File列表
-     */
-    public List<File> getFile() {
-        List<File> res = new ArrayList<File>();
-        for(var i : NametoUID.entrySet()) {
-            res.add(i.getKey());
+    public Set<File> getFile(String UID) {
+        return UIDtoFile.get(UID);
+    }
+
+    private boolean isUidExist(String UID) {
+        if(UIDtoFile.containsKey(UID))
+            return true;
+        for(var i : UIDtoTree.entrySet()) {
+            var otherUID = i.getValue();
+            var otherFile = join(TREE_DIR, otherUID);
+            Tree other = readObject(otherFile, Tree.class);
+            if(other.isUidExist(UID))
+                return true;
         }
-        return res;
+        return false;
     }
 }
