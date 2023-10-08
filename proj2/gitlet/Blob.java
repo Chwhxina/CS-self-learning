@@ -35,15 +35,13 @@ public class Blob implements Serializable {
     public static Blob getBlob(File file) {
         return readObject(file, Blob.class);
     }
+    public String toUID() {
+        return sha1(serialize(this));
+    }
     /****
      * 存储Blob块
      */
     public String saveBlob() {
-        if (!BLOBS_DIR.exists()) {
-            if(!BLOBS_DIR.mkdir()) {
-                System.out.println("create project dir failed");
-            }
-        }
         var sha1code = sha1(serialize(this));
         writeObject(join(BLOBS_DIR, sha1code), this);
         return sha1code;
