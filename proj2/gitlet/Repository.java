@@ -79,7 +79,6 @@ public class Repository implements Serializable {
 
         //初始化STAGE AREA
         Stage stage = new Stage();
-        stage.save();
     }
 
     public void add(String fileName) {
@@ -98,9 +97,10 @@ public class Repository implements Serializable {
 
         //把文件写入暂存区
         Blob addBlob = new Blob(file);
-        String UID = addBlob.saveBlob();
         Stage stage = Stage.load();
-        stage.add(file, UID);
-        stage.save();
+        if(!stage.exist(addBlob.toUID())) {
+            String UID = addBlob.saveBlob();
+            stage.add(file, UID);
+        }
     }
 }
