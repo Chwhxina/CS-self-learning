@@ -7,7 +7,7 @@ import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
 public class Tree implements Serializable {
-    private final Map<String, Set<File>> UIDtoFile;
+    private final Map<String, String> UIDtoFile;
     private final Map<String, String> UIDtoTree;
 
     public Tree() {
@@ -20,13 +20,11 @@ public class Tree implements Serializable {
      * @param UID 文件的hash值
      * @param name 文件的路径
      */
-    public void addFile(String UID, File name) {
-        if(UIDtoFile.containsKey(UID)) {
+    public void addFile(String UID, String name) {
 
-        }
     }
 
-    public Set<File> getFile(String UID) {
+    public String getFile(String UID) {
         return UIDtoFile.get(UID);
     }
 

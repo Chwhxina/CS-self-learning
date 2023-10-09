@@ -10,6 +10,7 @@ public class test implements Serializable {
     @Test
     public void test() {
         Repository repository = new Repository();
-        Repository.add();
+        repository.add("1");
+        Stage stage = Stage.load();
     }
 }

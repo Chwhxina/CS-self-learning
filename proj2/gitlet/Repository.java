@@ -3,6 +3,7 @@ package gitlet;
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
+import java.security.PublicKey;
 
 import static gitlet.Utils.*;
 
@@ -68,31 +69,38 @@ public class Repository implements Serializable {
 
         //初始化branch
         String masterUID = master.saveCommit();
-        File MASTER = join(HEADS_DIR, masterUID);
+        File MASTER = join(HEADS_DIR, "master");
         writeContents(MASTER, masterUID);
         if(MASTER.toPath().startsWith(GITLET_DIR.toPath())) {
-            writeContents(HEAD, MASTER.toPath().relativize(GITLET_DIR.toPath()).toString());
+            writeContents(HEAD, GITLET_DIR.toPath().relativize(MASTER.toPath()).toString());
         } else {
             System.out.println("HEAD ERROR");
         }
+
+        //初始化STAGE AREA
+        Stage stage = new Stage();
+        stage.save();
     }
 
-    public static void add(String file) {
-        File addFile = join(PROJ_DIR, file);
+    public void add(String fileName) {
+        File file = join(CWD, fileName);
+        addFile(file);
+    }
 
+    private void addFile(File file) {
         //如果目的文件为文件夹
-        if(addFile.isDirectory()) {
-            for(var i : addFile.listFiles()) {
-                add(i.getName());
+        if(file.isDirectory()) {
+            for(var i : file.listFiles()) {
+                addFile(i);
             }
             return;
         }
 
         //把文件写入暂存区
-        Blob addBlob = new Blob(addFile);
+        Blob addBlob = new Blob(file);
         String UID = addBlob.saveBlob();
-        Stage stage = readObject(STAGE, Stage.class);
-        stage.UIDs.add(UID);
-        writeObject(STAGE, stage);
+        Stage stage = Stage.load();
+        stage.add(file, UID);
+        stage.save();
     }
 }
