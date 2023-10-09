@@ -7,29 +7,34 @@ import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
 public class Tree implements Serializable {
-    private final Map<String, String> UIDtoFile;
+    private final Map<String, String> UIDtoName;
     private final Map<String, String> UIDtoTree;
 
     public Tree() {
-        UIDtoFile = new HashMap<>();
+        UIDtoName = new HashMap<>();
         UIDtoTree = new HashMap<>();
+        update();
     }
 
-    /***
-     *
-     * @param UID 文件的hash值
-     * @param name 文件的路径
-     */
-    public void addFile(String UID, String name) {
+    public Tree(Tree tree) {
+        this.UIDtoName = tree.UIDtoName;
+        this.UIDtoTree = tree.UIDtoTree;
+        update();
+    }
 
+    private void update() {
+        Stage stage = Stage.load();
+        for(var i : stage.getEntry()) {
+
+        }
     }
 
     public String getFile(String UID) {
-        return UIDtoFile.get(UID);
+        return UIDtoName.get(UID);
     }
 
     private boolean isUidExist(String UID) {
-        if(UIDtoFile.containsKey(UID))
+        if(UIDtoName.containsKey(UID))
             return true;
         for(var i : UIDtoTree.entrySet()) {
             var otherUID = i.getValue();

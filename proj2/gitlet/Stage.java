@@ -23,4 +23,8 @@ public class Stage implements Serializable {
     public void add(File file, String UID) {
         FiletoUID.put(file, UID);
     }
+
+    public Set<Map.Entry<File, String>> getEntry() {
+        return FiletoUID.entrySet();
+    }
 }
