@@ -84,15 +84,29 @@ public class Repository implements Serializable {
 
     public static void add(String fileName) {
         File file = join(CWD, fileName);
+        if(!file.exists()) {
+            System.out.println("File does not exist.");
+            return;
+        }
         Repository repository = load();
         repository.addFile(file);
     }
 
     public static void commit(String message) {
+        //检查Stage
+        Stage stage = Stage.load();
+        if(stage.isEmpty()) {
+            System.out.println("No changes added to the commit.");
+            return;
+        }
+        //找到head
         String head = readContentsAsString(HEAD);
         String parentUid = readContentsAsString(join(GITLET_DIR, head));
+        //建立新Commit
         Commit newCommit = new Commit(message, parentUid);
-        newCommit.saveCommit();
+        String newHead = newCommit.saveCommit();
+        //修改head
+        writeContents(join(GITLET_DIR, head), newHead);
     }
 
     private void addFile(File file) {

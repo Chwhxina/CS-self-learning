@@ -45,7 +45,8 @@ public class Commit implements Serializable {
             this.timestamp = sdf.format(date);
             //更新树
             Tree tree = parent.getTree();
-            this.treeUID = tree.update();
+            tree.update();
+            this.treeUID = tree.toUID();
         }
     }
 

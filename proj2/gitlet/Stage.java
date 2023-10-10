@@ -54,4 +54,8 @@ public class Stage implements Serializable {
     public Set<Map.Entry<File, String>> getEntry() {
         return FiletoUID.entrySet();
     }
+
+    public boolean isEmpty() {
+        return UIDs.isEmpty();
+    }
 }

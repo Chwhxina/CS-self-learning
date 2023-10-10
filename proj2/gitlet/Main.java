@@ -23,9 +23,21 @@ public class Main {
                 break;
             case "add":
                 // TODO: handle the `add [filename]` command
-
+                if(args.length < 2 || args[1] == null){
+                    System.out.println("File does not exist.");
+                    return;
+                }
+                String filename = args[1];
+                Repository.add(filename);
                 break;
-            // TODO: FILL THE REST IN
+            case "commit":
+                if(args.length < 2 || args[1] == null){
+                    System.out.println("Please enter a commit message.");
+                    return;
+                }
+                String message = args[1];
+                Repository.commit(message);
+                break;
         }
     }
 }

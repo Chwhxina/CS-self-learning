@@ -19,7 +19,7 @@ public class Tree implements Serializable {
     }
 
 
-    public String update() {
+    public void update() {
         Stage stage = Stage.load();
         for(var i : stage.Entry()) {
             File iFile = i.getKey();
@@ -41,12 +41,12 @@ public class Tree implements Serializable {
 
             //文件夹在Tree的目录的文件夹下，并且Tree无索引
             Tree subTree = new Tree(join(this.dirPoint, dir));
-            String subTreeUid = subTree.update();
+            subTree.update();
+            String subTreeUid = subTree.toUID();
             this.DirtoTree.put(dir, subTreeUid);
         }
 
         writeObject(join(TREE_DIR, toUID()), this);
-        return toUID();
     }
 
     public static Tree getTree(String UID) {
