@@ -27,8 +27,7 @@ public class Repository implements Serializable {
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
-    public static final File PROJ_DIR = join(CWD, "proj2");
-    public static final File GITLET_DIR = join(PROJ_DIR, ".gitlet");
+    public static final File GITLET_DIR = join(CWD, ".gitlet");
     public static final File REFS_DIR = join(GITLET_DIR, "refs");
     public static final File OBJ_DIR = join(GITLET_DIR, "objects");
     public static final File BLOBS_DIR = join(OBJ_DIR, "blobs");
