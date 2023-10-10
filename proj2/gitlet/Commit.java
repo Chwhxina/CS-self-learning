@@ -6,6 +6,7 @@ import static gitlet.Repository.*;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date; // TODO: You'll likely use this in this class
 
 /** Represents a gitlet commit object.
@@ -26,28 +27,42 @@ public class Commit implements Serializable {
     /** The message of this Commit. */
     private String message;
     private String timestamp;
-    private String parent;
-    private String UID;
-    private String tree;
+    private String parentUID;
+    private String treeUID;
     /* TODO: fill in the rest of this class. */
-    public Commit(String message, String parent, String tree) {
+    public Commit(String message, String parentUID) {
         this.message = message;
-        this.parent = parent;
-        this.tree = tree;
-        if(this.parent == null) {
+        this.parentUID = parentUID;
+        if(this.parentUID == null) {
             this.timestamp = "00:00:00 UTC, Thursday, 1 January 1970";
+            this.treeUID = null;
+        } else {
+            //获取父Commit
+            Commit parent = readObject(join(COMMIT_DIR, parentUID), Commit.class);
+            //设置时间
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss 'CST', EEEE, d MMMM yyyy");
+            this.timestamp = sdf.format(date);
+            //更新树
+            Tree tree = parent.getTree();
+            this.treeUID = tree.update();
         }
     }
 
     public String saveCommit() {
-        this.UID = sha1(serialize(this));
-        File file = join(COMMIT_DIR, this.UID);
+        String UID = sha1(serialize(this));
+        File file = join(COMMIT_DIR, UID);
         writeObject(file, this);
-        return this.UID;
+        return UID;
     }
-
 
     public static Commit getCommit(File file) {
         return readObject(file, Commit.class);
+    }
+
+    public Tree getTree() {
+        if(this.treeUID == null)
+            return new Tree(CWD);
+        return readObject(join(TREE_DIR, treeUID), Tree.class);
     }
 }

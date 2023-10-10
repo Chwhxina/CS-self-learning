@@ -36,6 +36,7 @@ public class Repository implements Serializable {
     public static final File STAGE = join(BLOBS_DIR, "stage");
     public static final File HEADS_DIR = join(REFS_DIR, "heads");
     public static final File HEAD = join(GITLET_DIR, "head");
+    public static final File INDEX = join(GITLET_DIR, "index");
     /* TODO: fill in the rest of this class. */
     public Repository() {
         init();
@@ -64,7 +65,7 @@ public class Repository implements Serializable {
         }
 
         //初始化Commit
-        Commit master = new Commit("initial commit", null, null);
+        Commit master = new Commit("initial commit", null);
 
         //初始化branch
         String masterUID = master.saveCommit();
@@ -78,11 +79,20 @@ public class Repository implements Serializable {
 
         //初始化STAGE AREA
         Stage stage = new Stage();
+        save();
     }
 
-    public void add(String fileName) {
+    public static void add(String fileName) {
         File file = join(CWD, fileName);
-        addFile(file);
+        Repository repository = load();
+        repository.addFile(file);
+    }
+
+    public static void commit(String message) {
+        String head = readContentsAsString(HEAD);
+        String parentUid = readContentsAsString(join(GITLET_DIR, head));
+        Commit newCommit = new Commit(message, parentUid);
+        newCommit.saveCommit();
     }
 
     private void addFile(File file) {
@@ -101,5 +111,13 @@ public class Repository implements Serializable {
             String UID = addBlob.saveBlob();
             stage.add(file, UID);
         }
+    }
+
+    private void save() {
+        writeObject(INDEX, this);
+    }
+
+    public static Repository load() {
+        return readObject(INDEX, Repository.class);
     }
 }

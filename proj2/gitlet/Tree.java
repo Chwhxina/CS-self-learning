@@ -16,17 +16,10 @@ public class Tree implements Serializable {
         this.NametoBlob = new HashMap<>();
         this.DirtoTree = new HashMap<>();
         this.dirPoint = dirPoint;
-        update();
     }
 
-    public Tree(Tree tree) {
-        this.NametoBlob = tree.NametoBlob;
-        this.DirtoTree = tree.DirtoTree;
-        this.dirPoint = tree.dirPoint;
-        update();
-    }
 
-    public void update() {
+    public String update() {
         Stage stage = Stage.load();
         for(var i : stage.Entry()) {
             File iFile = i.getKey();
@@ -48,10 +41,12 @@ public class Tree implements Serializable {
 
             //文件夹在Tree的目录的文件夹下，并且Tree无索引
             Tree subTree = new Tree(join(this.dirPoint, dir));
-            subTree.update();
+            String subTreeUid = subTree.update();
+            this.DirtoTree.put(dir, subTreeUid);
         }
 
         writeObject(join(TREE_DIR, toUID()), this);
+        return toUID();
     }
 
     public static Tree getTree(String UID) {
@@ -62,7 +57,7 @@ public class Tree implements Serializable {
         return readObject(tree, Tree.class);
     }
 
-    private String toUID() {
+    public String toUID() {
         return sha1(serialize(this));
     }
 }

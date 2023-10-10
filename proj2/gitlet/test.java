@@ -4,13 +4,19 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.List;
+import static gitlet.Repository.*;
+import static gitlet.Utils.*;
 
 public class test implements Serializable {
     @Test
     public void test() {
         Repository repository = new Repository();
-        repository.add("1");
-        Stage stage = Stage.load();
+        Repository.add("1");
+        Repository.commit("test");
+    }
+
+    @Test
+    public void test2() {
+        System.out.println(CWD);
     }
 }
