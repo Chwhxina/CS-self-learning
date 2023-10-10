@@ -1,5 +1,6 @@
 package gitlet;
 
+import javax.naming.spi.StateFactory;
 import java.io.File;
 import java.io.Serializable;
 import java.util.*;
@@ -7,42 +8,61 @@ import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
 public class Tree implements Serializable {
-    private final Map<String, String> UIDtoName;
-    private final Map<String, String> UIDtoTree;
+    private final Map<String, String> NametoBlob;
+    private final Map<String, String> DirtoTree;
+    private final File dirPoint;
 
-    public Tree() {
-        UIDtoName = new HashMap<>();
-        UIDtoTree = new HashMap<>();
+    public Tree(File dirPoint) {
+        this.NametoBlob = new HashMap<>();
+        this.DirtoTree = new HashMap<>();
+        this.dirPoint = dirPoint;
         update();
     }
 
     public Tree(Tree tree) {
-        this.UIDtoName = tree.UIDtoName;
-        this.UIDtoTree = tree.UIDtoTree;
+        this.NametoBlob = tree.NametoBlob;
+        this.DirtoTree = tree.DirtoTree;
+        this.dirPoint = tree.dirPoint;
         update();
     }
 
-    private void update() {
+    public void update() {
         Stage stage = Stage.load();
-        for(var i : stage.getEntry()) {
+        for(var i : stage.Entry()) {
+            File iFile = i.getKey();
+            String iUid = i.getValue();
 
+            //文件在当前Tree管理的目录下，直接进行更新
+            if(iFile.toPath().getParent().equals(this.dirPoint.toPath())) {
+                this.NametoBlob.put(iFile.getName(), iUid);
+                stage.remove(iFile);
+                continue;
+            }
+
+            //文件夹在Tree的目录的文件夹下，并且Tree有索引
+            String dir = dirPoint.toPath().relativize(iFile.toPath()).subpath(0,1).toString();
+            if(DirtoTree.containsKey(dir)) {
+                readObject(join(TREE_DIR, DirtoTree.get(dir)), Tree.class).update();
+                continue;
+            }
+
+            //文件夹在Tree的目录的文件夹下，并且Tree无索引
+            Tree subTree = new Tree(join(this.dirPoint, dir));
+            subTree.update();
         }
+
+        writeObject(join(TREE_DIR, toUID()), this);
     }
 
-    public String getFile(String UID) {
-        return UIDtoName.get(UID);
+    public static Tree getTree(String UID) {
+        File tree = join(TREE_DIR, UID);
+        if(!tree.exists()) {
+            System.out.println("Tree is not exist");
+        }
+        return readObject(tree, Tree.class);
     }
 
-    private boolean isUidExist(String UID) {
-        if(UIDtoName.containsKey(UID))
-            return true;
-        for(var i : UIDtoTree.entrySet()) {
-            var otherUID = i.getValue();
-            var otherFile = join(TREE_DIR, otherUID);
-            Tree other = readObject(otherFile, Tree.class);
-            if(other.isUidExist(UID))
-                return true;
-        }
-        return false;
+    private String toUID() {
+        return sha1(serialize(this));
     }
 }

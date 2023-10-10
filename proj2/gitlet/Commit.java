@@ -27,7 +27,6 @@ public class Commit implements Serializable {
     private String message;
     private String timestamp;
     private String parent;
-    private String Path;
     private String UID;
     private String tree;
     /* TODO: fill in the rest of this class. */
@@ -41,21 +40,12 @@ public class Commit implements Serializable {
     }
 
     public String saveCommit() {
-        if(!COMMIT_DIR.exists()) {
-            if(!COMMIT_DIR.mkdir()) {
-                throw new IllegalArgumentException("create commit dir failed");
-            }
-        }
         this.UID = sha1(serialize(this));
         File file = join(COMMIT_DIR, this.UID);
-        this.Path = file.getPath();
         writeObject(file, this);
         return this.UID;
     }
 
-    public String getPath() {
-        return this.Path;
-    }
 
     public static Commit getCommit(File file) {
         return readObject(file, Commit.class);
