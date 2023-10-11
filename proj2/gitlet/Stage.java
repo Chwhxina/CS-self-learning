@@ -6,9 +6,10 @@ import java.util.*;
 import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
-public class Stage implements Serializable {
+public class Stage implements Serializable, Dumpable {
     private Map<File, String> FiletoUID;
     private Set<String> UIDs;
+    private Set<String> usedUID;
 
     public Stage() {
         FiletoUID = new HashMap<>();
@@ -24,8 +25,6 @@ public class Stage implements Serializable {
     }
 
     public void add(File file, String UID) {
-        if(UIDs.contains(UID))
-            return;
         FiletoUID.put(file, UID);
         UIDs.add(UID);
         save();
@@ -35,15 +34,23 @@ public class Stage implements Serializable {
         return FiletoUID.entrySet();
     }
 
-    public void clean() {
-        FiletoUID = new HashMap<>();
-        UIDs = new TreeSet<>();
-        save();
+    public void used(File file, String UID) {
+        FiletoUID.remove(file);
+        usedUID.add(UID);
     }
 
-    public void remove(File file) {
-        UIDs.remove(FiletoUID.get(file));
-        FiletoUID.remove(file);
+    public void clean() {
+        //清除所有冗余的Blob
+        for(var i : UIDs) {
+            if(usedUID.contains(i)) {
+                File del = join(BLOBS_DIR, i);
+                restrictedDelete(del);
+            }
+        }
+        //重置stage
+        this.FiletoUID = new HashMap<>();
+        this.UIDs = new TreeSet<>();
+        this.usedUID = new TreeSet<>();
         save();
     }
 
@@ -57,5 +64,16 @@ public class Stage implements Serializable {
 
     public boolean isEmpty() {
         return UIDs.isEmpty();
+    }
+
+    @Override
+    public void dump() {
+        System.out.println("---------------------");
+        System.out.println("stage area:");
+        System.out.printf("the number of files: %d\nthe number of UIDs: %d%n", this.FiletoUID.size(), this.UIDs.size());
+        for(var i : this.FiletoUID.entrySet()) {
+            System.out.printf("%s: %s%n", i.getValue(), i.getKey());
+        }
+        System.out.println("---------------------");
     }
 }

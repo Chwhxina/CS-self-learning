@@ -10,13 +10,13 @@ import static gitlet.Utils.*;
 public class test implements Serializable {
     @Test
     public void test() {
-        Repository repository = new Repository();
-        Repository.add("1");
-        Repository.commit("test");
+        Main.main(new String[]{"init"});
+        Main.main(new String[]{"add", "1"});
+        Main.main(new String[]{"commit", "test"});
     }
 
     @Test
     public void test2() {
-        DumpObj.main();
-    }
+        Stage stage = Stage.load();
+  }
 }

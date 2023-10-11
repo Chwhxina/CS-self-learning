@@ -45,8 +45,10 @@ public class Blob implements Serializable, Dumpable {
      * 存储Blob块
      */
     public String saveBlob() {
+        Stage stage = Stage.load();
         var sha1code = toUID();
-        writeObject(join(BLOBS_DIR, sha1code), this);
+        if(!stage.exist(sha1code))
+            writeObject(join(BLOBS_DIR, sha1code), this);
         return sha1code;
     }
 

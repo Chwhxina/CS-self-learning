@@ -20,6 +20,11 @@ public class Tree implements Serializable, Dumpable {
 
     public void update() {
         Stage stage = Stage.load();
+        updateInTree(stage);
+        stage.clean();
+    }
+
+    public void updateInTree(Stage stage) {
         for(var i : stage.Entry()) {
             File iFile = i.getKey();
             String iUid = i.getValue();
@@ -27,7 +32,7 @@ public class Tree implements Serializable, Dumpable {
             //文件在当前Tree管理的目录下，直接进行更新
             if(iFile.toPath().getParent().equals(this.dirPoint.toPath())) {
                 this.NametoBlob.put(iFile.getName(), iUid);
-                stage.remove(iFile);
+                stage.used(iFile, iUid);
                 continue;
             }
 
@@ -40,7 +45,7 @@ public class Tree implements Serializable, Dumpable {
 
             //文件夹在Tree的目录的文件夹下，并且Tree无索引
             Tree subTree = new Tree(join(this.dirPoint, dir));
-            subTree.update();
+            subTree.updateInTree(stage);
             String subTreeUid = subTree.toUID();
             this.DirtoTree.put(dir, subTreeUid);
         }
@@ -64,11 +69,14 @@ public class Tree implements Serializable, Dumpable {
     public void dump() {
         System.out.println("type: Tree");
         System.out.println("---------------------------------");
-        System.out.printf("dir: %s%n", DirtoTree);
+        System.out.printf("dir point: %s%n", dirPoint);
+        System.out.println("---------------------------------");
         for(var i : NametoBlob.entrySet()) {
+            System.out.println("following is blob to filename");
             System.out.printf("%s: %s%n", i.getValue(), i.getKey());
         }
         for(var i : DirtoTree.entrySet()) {
+            System.out.println("following is Tree to dirname");
             System.out.printf("%s: %s%n", i.getValue(), i.getKey());
         }
     }

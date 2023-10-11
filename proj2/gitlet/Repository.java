@@ -122,22 +122,37 @@ public class Repository implements Serializable, Dumpable {
         //把文件写入暂存区
         Blob addBlob = new Blob(file);
         Stage stage = Stage.load();
-        if(!stage.exist(addBlob.toUID())) {
-            String UID = addBlob.saveBlob();
-            stage.add(file, UID);
-        }
+        String UID = addBlob.saveBlob();
+        stage.add(file, UID);
     }
 
     public static String simpleNameToName(String simple) {
+        if(simple.equals("-s")) {
+            return STAGE.getPath();
+        }
+
         if(!OBJ_DIR.exists()) {
             System.out.println("OBJ_DIR is null");
             return null;
         }
-        for(var i : Objects.requireNonNull(OBJ_DIR.listFiles())) {
+        for(var i : Objects.requireNonNull(BLOBS_DIR.listFiles())) {
             if(i.getName().startsWith(simple)) {
                 return i.getPath();
             }
         }
+
+        for (var i : Objects.requireNonNull(COMMIT_DIR.listFiles())) {
+            if(i.getName().startsWith(simple)) {
+                return i.getPath();
+            }
+        }
+
+        for (var i : Objects.requireNonNull(TREE_DIR.listFiles())) {
+            if(i.getName().startsWith(simple)) {
+                return i.getPath();
+            }
+        }
+
         System.out.println("no needed file");
         return null;
     }
