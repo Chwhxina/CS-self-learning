@@ -14,12 +14,11 @@ public class Main {
             System.out.println("Please enter a command.");
             return;
         }
-        Repository repo;
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
                 // TODO: handle the `init` command
-                repo = new Repository();
+                new Repository();
                 break;
             case "add":
                 // TODO: handle the `add [filename]` command
@@ -37,6 +36,13 @@ public class Main {
                 }
                 String message = args[1];
                 Repository.commit(message);
+                break;
+            case "dump":
+                if(args.length < 2 || args[1] == null) {
+                    System.out.println("Please enter filename");
+                    return;
+                }
+                DumpObj.main(Repository.simpleNameToName(args[1]));
                 break;
         }
     }

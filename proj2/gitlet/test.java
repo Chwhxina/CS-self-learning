@@ -17,6 +17,6 @@ public class test implements Serializable {
 
     @Test
     public void test2() {
-        System.out.println(CWD);
+        DumpObj.main();
     }
 }

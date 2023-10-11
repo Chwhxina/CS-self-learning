@@ -15,7 +15,7 @@ import java.util.Date; // TODO: You'll likely use this in this class
  *
  *  @author TODO
  */
-public class Commit implements Serializable {
+public class Commit implements Serializable, Dumpable {
     /**
      * TODO: add instance variables here.
      *
@@ -65,5 +65,19 @@ public class Commit implements Serializable {
         if(this.treeUID == null)
             return new Tree(CWD);
         return readObject(join(TREE_DIR, treeUID), Tree.class);
+    }
+
+    @Override
+    public void dump() {
+        System.out.println("type: Commit");
+        System.out.println("-------------------------------------------");
+        System.out.printf("timestamp: %s%n",timestamp);
+        System.out.printf("message: %s%n", message);
+        if(parentUID == null)
+            System.out.println("parent: null");
+        else
+            System.out.printf("parent: %s%n", parentUID);
+        System.out.printf("tree: %s%n", treeUID);
+        System.out.println("-------------------------------------------");
     }
 }

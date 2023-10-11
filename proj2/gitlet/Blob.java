@@ -1,10 +1,13 @@
 package gitlet;
 import java.io.File;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
 import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
-public class Blob implements Serializable {
+public class Blob implements Serializable, Dumpable {
     private byte[] contend;
     /***
      * 初始化Blob
@@ -45,5 +48,13 @@ public class Blob implements Serializable {
         var sha1code = toUID();
         writeObject(join(BLOBS_DIR, sha1code), this);
         return sha1code;
+    }
+
+    @Override
+    public void dump() {
+        System.out.println("type: Blob");
+        System.out.println("-------------------------------");
+        System.out.println(new String(contend, StandardCharsets.UTF_8));
+        System.out.println("-------------------------------");
     }
 }

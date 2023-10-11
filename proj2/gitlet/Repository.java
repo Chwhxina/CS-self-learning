@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.security.PublicKey;
+import java.util.Objects;
 
 import static gitlet.Utils.*;
 
@@ -15,7 +16,7 @@ import static gitlet.Utils.*;
  *
  *  @author TODO
  */
-public class Repository implements Serializable {
+public class Repository implements Serializable, Dumpable {
     /**
      * TODO: add instance variables here.
      *
@@ -127,11 +128,34 @@ public class Repository implements Serializable {
         }
     }
 
+    public static String simpleNameToName(String simple) {
+        if(!OBJ_DIR.exists()) {
+            System.out.println("OBJ_DIR is null");
+            return null;
+        }
+        for(var i : Objects.requireNonNull(OBJ_DIR.listFiles())) {
+            if(i.getName().startsWith(simple)) {
+                return i.getPath();
+            }
+        }
+        System.out.println("no needed file");
+        return null;
+    }
+
     private void save() {
         writeObject(INDEX, this);
     }
 
     public static Repository load() {
         return readObject(INDEX, Repository.class);
+    }
+
+    @Override
+    public void dump() {
+        File branchfile = join(GITLET_DIR, readContentsAsString(HEAD));
+        String branch = branchfile.getName();
+        String commitID = readContentsAsString(branchfile);
+        System.out.println("type: Repository");
+        System.out.printf("Branch: %s \n CommitID: %s%n", branch, commitID);
     }
 }

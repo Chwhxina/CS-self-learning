@@ -7,7 +7,7 @@ import java.util.*;
 import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
-public class Tree implements Serializable {
+public class Tree implements Serializable, Dumpable {
     private final Map<String, String> NametoBlob;
     private final Map<String, String> DirtoTree;
     private final File dirPoint;
@@ -17,7 +17,6 @@ public class Tree implements Serializable {
         this.DirtoTree = new HashMap<>();
         this.dirPoint = dirPoint;
     }
-
 
     public void update() {
         Stage stage = Stage.load();
@@ -59,5 +58,18 @@ public class Tree implements Serializable {
 
     public String toUID() {
         return sha1(serialize(this));
+    }
+
+    @Override
+    public void dump() {
+        System.out.println("type: Tree");
+        System.out.println("---------------------------------");
+        System.out.printf("dir: %s%n", DirtoTree);
+        for(var i : NametoBlob.entrySet()) {
+            System.out.printf("%s: %s%n", i.getValue(), i.getKey());
+        }
+        for(var i : DirtoTree.entrySet()) {
+            System.out.printf("%s: %s%n", i.getValue(), i.getKey());
+        }
     }
 }
