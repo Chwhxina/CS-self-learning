@@ -123,7 +123,7 @@ public class Repository implements Serializable, Dumpable {
         Blob addBlob = new Blob(file);
         Stage stage = Stage.load();
         String UID = addBlob.saveBlob();
-        stage.add(file, UID);
+        stage.add(CWD.toPath().relativize(file.toPath()).toString(), UID);
     }
 
     public static String simpleNameToName(String simple) {

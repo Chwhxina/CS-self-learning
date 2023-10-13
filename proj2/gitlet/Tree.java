@@ -25,20 +25,19 @@ public class Tree implements Serializable, Dumpable {
     }
 
     public void updateInTree(Stage stage) {
-        for(var i : stage.Entry()) {
-            File iFile = i.getKey();
+        for (var i : stage.Entry()) {
+            File iFile = join(CWD, i.getKey());
             String iUid = i.getValue();
 
             //文件在当前Tree管理的目录下，直接进行更新
-            if(iFile.toPath().getParent().equals(this.dirPoint.toPath())) {
+            if (iFile.toPath().getParent().equals(this.dirPoint.toPath())) {
                 this.NametoBlob.put(iFile.getName(), iUid);
-                stage.used(iFile, iUid);
-                continue;
+                stage.used(i.getKey(), iUid);
             }
 
             //文件夹在Tree的目录的文件夹下，并且Tree有索引
-            String dir = dirPoint.toPath().relativize(iFile.toPath()).subpath(0,1).toString();
-            if(DirtoTree.containsKey(dir)) {
+            String dir = dirPoint.toPath().relativize(iFile.toPath()).subpath(0, 1).toString();
+            if (DirtoTree.containsKey(dir)) {
                 readObject(join(TREE_DIR, DirtoTree.get(dir)), Tree.class).update();
                 continue;
             }

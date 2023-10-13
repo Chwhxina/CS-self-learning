@@ -7,13 +7,14 @@ import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
 public class Stage implements Serializable, Dumpable {
-    private Map<File, String> FiletoUID;
+    private Map<String, String> FiletoUID;
     private Set<String> UIDs;
     private Set<String> usedUID;
 
     public Stage() {
         FiletoUID = new HashMap<>();
         UIDs = new TreeSet<>();
+        usedUID = new TreeSet<>();
         save();
     }
     public static Stage load() {
@@ -24,18 +25,18 @@ public class Stage implements Serializable, Dumpable {
         writeObject(STAGE, this);
     }
 
-    public void add(File file, String UID) {
-        FiletoUID.put(file, UID);
+    public void add(String relative, String UID) {
+        FiletoUID.put(relative, UID);
         UIDs.add(UID);
         save();
     }
 
-    public Set<Map.Entry<File,String>> Entry() {
+    public Set<Map.Entry<String,String>> Entry() {
         return FiletoUID.entrySet();
     }
 
-    public void used(File file, String UID) {
-        FiletoUID.remove(file);
+    public void used(String relative, String UID) {
+        FiletoUID.remove(relative);
         usedUID.add(UID);
     }
 
@@ -56,10 +57,6 @@ public class Stage implements Serializable, Dumpable {
 
     public boolean exist(String UID) {
         return UIDs.contains(UID);
-    }
-
-    public Set<Map.Entry<File, String>> getEntry() {
-        return FiletoUID.entrySet();
     }
 
     public boolean isEmpty() {
