@@ -36,7 +36,6 @@ public class Stage implements Serializable, Dumpable {
     }
 
     public void used(String relative, String UID) {
-        FiletoUID.remove(relative);
         usedUID.add(UID);
     }
 

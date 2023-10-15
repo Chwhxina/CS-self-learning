@@ -1,6 +1,5 @@
 package gitlet;
 
-import javax.naming.spi.StateFactory;
 import java.io.File;
 import java.io.Serializable;
 import java.util.*;
@@ -25,7 +24,9 @@ public class Tree implements Serializable, Dumpable {
     }
 
     public void updateInTree(Stage stage) {
-        for (var i : stage.Entry()) {
+        Iterator<Map.Entry<String, String>> iterator = stage.Entry().iterator();
+        while (iterator.hasNext()) {
+            var i = iterator.next();
             File iFile = join(CWD, i.getKey());
             String iUid = i.getValue();
 
@@ -33,6 +34,7 @@ public class Tree implements Serializable, Dumpable {
             if (iFile.toPath().getParent().equals(this.dirPoint.toPath())) {
                 this.NametoBlob.put(iFile.getName(), iUid);
                 stage.used(i.getKey(), iUid);
+                continue;
             }
 
             //文件夹在Tree的目录的文件夹下，并且Tree有索引
@@ -43,10 +45,12 @@ public class Tree implements Serializable, Dumpable {
             }
 
             //文件夹在Tree的目录的文件夹下，并且Tree无索引
-            Tree subTree = new Tree(join(this.dirPoint, dir));
-            subTree.updateInTree(stage);
-            String subTreeUid = subTree.toUID();
-            this.DirtoTree.put(dir, subTreeUid);
+            if (iFile.toPath().startsWith(this.dirPoint.toPath())) {
+                Tree subTree = new Tree(join(this.dirPoint, dir));
+                subTree.updateInTree(stage);
+                String subTreeUid = subTree.toUID();
+                this.DirtoTree.put(dir, subTreeUid);
+            }
         }
 
         writeObject(join(TREE_DIR, toUID()), this);

@@ -27,6 +27,6 @@ public class test implements Serializable {
     }
     @Test
     public void test2() {
-        Stage stage = Stage.load();
+
   }
 }
